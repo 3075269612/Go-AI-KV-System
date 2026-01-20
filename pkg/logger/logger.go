@@ -12,7 +12,7 @@ var Log *zap.Logger
 func InitLogger() {
 	// 获取配置中的日志配置
 	logMode := viper.GetString("server.mode")
-	
+
 	var config zap.Config
 	if logMode == "debug" {
 		// 开发模式：日志是彩色的，方便看
@@ -25,7 +25,7 @@ func InitLogger() {
 
 	// 设置输出位置（默认标准输出）
 	config.OutputPaths = []string{"stdout"}
-	
+
 	// 构建日志器
 	var err error
 	Log, err = config.Build()
@@ -33,6 +33,6 @@ func InitLogger() {
 		// 如果日志都起不来，那程序也没法跑了
 		panic("❌ 日志初始化失败: " + err.Error())
 	}
-	
+
 	Log.Info("✅ 日志系统初始化完成", zap.String("env", logMode))
 }

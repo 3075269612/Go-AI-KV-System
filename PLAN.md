@@ -15,10 +15,10 @@
 ---
 
 ## 🗺️ 阶段一：分布式存储引擎 (Day 1-10)
-- [x] **Day 1**: ~~线程安全 Map~~ -> 工程基础设施搭建 (Layout/Viper/Zap/Gin) (已完成)
+- [x] **Day 1**: ~~线程安全 Map~~ -> 工程基础设施搭建 (Layout/Viper/Zap/Gin) (已完成 ✅)
 
 - [x] **Day 1**: 线程安全 Map (sync.RWMutex) + 竞态检测 test (已达成 ✅)
-- [ ] **Day 2**: 实现 TTL 过期清理机制
+- [x] **Day 2**: 实现 TTL 过期清理机制 (Lazy + Active GC + Double Check 锁优化) ✅
 - [ ] **Day 3**: AOF 持久化 (文件 IO)
 - [ ] **Day 4**: TCP 服务端搭建 (自定义协议)
 - [ ] **Day 5**: 客户端 SDK 封装
