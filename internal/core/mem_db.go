@@ -1,6 +1,9 @@
 package core
 
 import (
+	"Go-AI-KV-System/internal/aof"
+	"Go-AI-KV-System/internal/config"
+	"log"
 	"sync"
 	"time"
 )
@@ -15,13 +18,60 @@ type Item struct {
 type MemDB struct {
 	mu   sync.RWMutex
 	data map[string]*Item
+
+	aofHandler *aof.AofHandler // 新增：持有AOF操作对象
 }
 
-func NewMemDB() *MemDB {
-	return &MemDB{
+func NewMemDB(cfg *config.Config) *MemDB {
+	db := &MemDB{
 		data: make(map[string]*Item),
 	}
+
+	// 新增：初始化 AOF 模块
+	if cfg.AOF.Filename != "" {
+		handler, err := aof.NewAofHandler(cfg.AOF.Filename)
+		if err != nil {
+			log.Fatal(err)
+		}
+		db.aofHandler = handler
+
+		// 新增：启动时立刻恢复数据
+		db.loadFromAof()
+	}
+	
+	return db
 }
+
+// 新增：从 AOF 文件恢复数据
+func (db *MemDB) loadFromAof() {
+	if db.aofHandler == nil {
+		return
+	}
+
+	// 读取所有命令
+	cmds, err := db.aofHandler.ReadAll()
+	if err != nil {
+		log.Printf("Read AOF failure: %v", err)
+		return
+	}
+
+	db.mu.Lock()
+	defer db.mu.Unlock()
+
+	// 重放命令
+	for _, cmd := range cmds {
+		switch cmd.Type {
+		case "set":
+			db.data[cmd.Key] = &Item{
+				Val: cmd.Value,
+				ExpireAt: 0,
+			}
+		case "del":
+			delete(db.data, cmd.Key)
+		}
+	}
+}
+
 
 // Set 写入数据，支持过期时间(ttl: time to live)
 // ttl = 0 表示永不过期
@@ -34,7 +84,18 @@ func (db *MemDB) Set(key string, val any, ttl time.Duration) {
 		expireAt = time.Now().Add(ttl).UnixNano()
 	}
 
+	// 1. 写内存
 	db.data[key] = &Item{val, expireAt}
+
+	// 2. 新增：写磁盘（AOF）
+	if db.aofHandler != nil {
+		cmd := aof.Cmd{
+			Type: 	"set",
+			Key:  	key,
+			Value: 	val,
+		}
+		_ = db.aofHandler.Write(cmd)
+	}
 }
 
 // Get 获取数据（实现惰性删除）
@@ -77,7 +138,25 @@ func (db *MemDB) Get(key string) (any, bool) {
 func (db *MemDB) Del(key string) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
+
+	// 1. 删内存
 	delete(db.data, key)
+
+	// 2. 新增：写 AOF
+	if db.aofHandler != nil {
+		cmd := aof.Cmd{
+			Type: "del",
+			Key: key,
+		}
+		_ = db.aofHandler.Write(cmd)
+	}
+}
+
+// 新增：关闭数据库
+func (db *MemDB) Close() {
+	if db.aofHandler != nil {
+		_ = db.aofHandler.Close()
+	}
 }
 
 // StartGC 启动定期清理（Garbage Collection）

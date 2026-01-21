@@ -5,3 +5,7 @@ server:
 log:
   level: "info"     # 日志级别：debug < info < warn < error
   encoding: "console" # 输出格式：console (也就是给人看的彩色字) 或 json (给机器看的)
+
+aof:
+  filename: "go-kv.aof"   # 持久化文件名
+  append_fsync: "everysec"

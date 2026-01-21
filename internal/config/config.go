@@ -5,6 +5,21 @@ import (
 	"log"
 )
 
+type Config struct {
+	Server ServerConfig `mapstructure:"server"`
+	AOF AOFConfig `mapstructure:"aof"`
+}
+
+type ServerConfig struct {
+	Port int `mapstructure:"port"`
+}
+
+// 新增 AOF 配置结构
+type AOFConfig struct {
+	Filename	string `mapstructure:"filename"`
+	AppendFsync string `mapstructure:"append_fsync"`
+}
+
 // InitConfig 初始化配置，失败直接 panic，不要犹豫
 func InitConfig() {
 	// 1. 告诉 Viper 我们要读的文件名叫 "config" (不需要 .yaml 后缀)
