@@ -20,7 +20,7 @@
 - [x] **Day 1**: 线程安全 Map (sync.RWMutex) + 竞态检测 test (已达成 ✅)
 - [x] **Day 2**: 实现 TTL 过期清理机制 (Lazy + Active GC + Double Check 锁优化) ✅
 - [x] **Day 3**: AOF 持久化 (文件 IO + 启动恢复) (已完成 ✅)
-- [ ] **Day 4**: TCP 服务端搭建 (自定义协议)
+- [x] **Day 4**: TCP 服务端搭建 (自定义协议解决粘包/拆包) (已完成 ✅)
 - [ ] **Day 5**: 客户端 SDK 封装
 - [ ] **Day 6**: gRPC 改造 (Protobuf 定义)
 - [ ] **Day 7**: gRPC 双向通信调试
