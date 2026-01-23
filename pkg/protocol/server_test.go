@@ -1,4 +1,4 @@
-package tcp
+package protocol
 
 import (
 	"Go-AI-KV-System/internal/config"
