@@ -30,6 +30,7 @@
 
 ## 🗺️ 阶段二：高性能 API 网关 (Day 11-20)
 - [ ] **Day 11**: HTTP Server 搭建 (Gin/net/http)
+
 - [ ] **Day 12**: 反向代理逻辑 (Proxy to gRPC)
 - [ ] **Day 13**: 中间件架构 (Logger)
 - [ ] **Day 14**: 异常恢复 (Recovery)
@@ -42,6 +43,7 @@
 
 ## 🗺️ 阶段三：AI RAG 赋能 (Day 21-30)
 - [ ] **Day 21**: DeepSeek/OpenAI API 接入
+
 - [ ] **Day 22**: 流式响应 (Stream) 处理
 - [ ] **Day 23**: 文本向量化 (Embeddings)
 - [ ] **Day 24**: 向量相似度计算
@@ -54,6 +56,7 @@
 
 ## 📝 阶段四：简历与面试 (Day 31-35)
 - [ ] **Day 31**: 架构图绘制 (Excalidraw)
+
 - [ ] **Day 32**: 难点/坑点文档整理
 - [ ] **Day 33**: 模拟面试 (基础篇)
 - [ ] **Day 34**: 模拟面试 (项目篇)
