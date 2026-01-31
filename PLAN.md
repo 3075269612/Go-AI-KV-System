@@ -33,7 +33,7 @@
 
 [x] Day 11: HTTP Server 搭建 (Gin 框架集成) ✅
 
-[ ] Day 12: [泛化调用] HTTP 转 gRPC 动态代理 —— 网关的核心，让前端能调后端
+[x] Day 12: [泛化调用] HTTP 转 gRPC 动态代理 —— 网关的核心，让前端能调后端 ✅
 
 [ ] Day 13: [链路追踪] 集成 OpenTelemetry/Jaeger —— 微服务可观测性，大厂必问
 

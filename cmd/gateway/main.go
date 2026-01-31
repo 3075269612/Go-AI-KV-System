@@ -3,6 +3,7 @@ package main
 import (
 	"Go-AI-KV-System/internal/gateway/handler"
 	"Go-AI-KV-System/internal/gateway/router"
+	"Go-AI-KV-System/pkg/client"
 	"Go-AI-KV-System/pkg/logger"
 	"context"
 	"errors"
@@ -19,8 +20,9 @@ import (
 
 func main() {
 	// 1. 初始化配置
-	viper.SetDefault("server.mode", "debug")	// 默认开发模式
-	viper.SetDefault("server.port", "8080")		// 默认端口
+	viper.SetDefault("server.mode", "debug")        // 默认开发模式
+	viper.SetDefault("server.port", "8080")         // 默认端口
+	viper.SetDefault("rpc.addr", "127.0.0.1:50051") // gRPC 服务端地址配置 (使用 IPv4 避免 localhost 解析延迟)
 
 	// 2. 初始化日志
 	logger.InitLogger()
@@ -34,16 +36,33 @@ func main() {
 	// 3. 设置 Gin 的运行模式
 	gin.SetMode(viper.GetString("server.mode"))
 
+	// 新增：gRPC Client 连接逻辑
+	rpcAddr := viper.GetString("rpc.addr")
+	log.Info("🔗 Connecting to gRPC Server...", zap.String("addr", rpcAddr))
+
+	// 初始化 gRPC 客户端
+	kvClient, err := client.NewClient(rpcAddr)
+	if err != nil {
+		log.Fatal("❌ Failed to connect to KV Server", zap.Error(err))
+	}
+	defer func() {
+		log.Info("🔌 Closing gRPC connection...")
+		if err := kvClient.Close(); err != nil {
+			log.Error("Failed to close gRPC connection", zap.Error(err))
+		}
+	}()
+
 	// 4. 初始化 Handlers (控制层)
+	kvHandler := handler.NewKVHandler(kvClient)
 	healthHandler := handler.NewHealthHandler()
 
 	// 5. 初始化 Router (路由层)
-	r := router.NewRouter(healthHandler)
+	r := router.NewRouter(kvHandler, healthHandler)
 
 	// 6. 配置 HTTP Server
 	port := viper.GetString("server.port")
 	srv := &http.Server{
-		Addr: ":" + port,
+		Addr:    ":" + port,
 		Handler: r,
 	}
 
@@ -65,7 +84,7 @@ func main() {
 	log.Info("⚠️ Shutting down gateway...")
 
 	// 创建一个 5 秒超时的 Context
-	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	// 关闭服务器，处理完当前的请求
