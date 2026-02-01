@@ -5,6 +5,7 @@ import (
 	"context"
 	"time"
 
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -18,7 +19,10 @@ type Client struct {
 // NewClient 创建了一个新的 gRPC 客户端连接
 func NewClient(address string) (*Client, error) {
 	// 1. 建立 gRPC 连接
-	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(address,
+		 grpc.WithTransportCredentials(insecure.NewCredentials()),
+		 grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -82,4 +86,3 @@ func (c *Client) Del(key string) error {
 	_, err := c.rpcClient.Del(ctx, req)
 	return err
 }
-

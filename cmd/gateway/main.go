@@ -5,6 +5,7 @@ import (
 	"Go-AI-KV-System/internal/gateway/router"
 	"Go-AI-KV-System/pkg/client"
 	"Go-AI-KV-System/pkg/logger"
+	"Go-AI-KV-System/pkg/tracer"
 	"context"
 	"errors"
 	"net/http"
@@ -28,6 +29,17 @@ func main() {
 	logger.InitLogger()
 	// 程序退出前刷新日志缓冲区，防止日志丢失
 	defer logger.Log.Sync()
+
+	// 初始化分布式链路追踪
+	tp, err := tracer.InitTracer("gateway-service", "localhost:4317")
+	if err != nil {
+		logger.Log.Error("❌ Failed to init tracer", zap.Error(err))
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			logger.Log.Error("Error shutting down tracer provider", zap.Error(err))
+		}
+	}()
 
 	// 获取全局 Logger 实例
 	log := logger.Log
