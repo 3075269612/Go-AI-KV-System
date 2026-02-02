@@ -2,6 +2,7 @@ package router
 
 import (
 	"Go-AI-KV-System/internal/gateway/handler"
+	"Go-AI-KV-System/internal/gateway/middleware"
 
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
@@ -9,12 +10,16 @@ import (
 
 // NewRouter 初始化 Gin 引擎并注册所有路由
 func NewRouter(kvHandler *handler.KVHandler, healthHandler *handler.HealthHandler) *gin.Engine {
-	r := gin.Default()
+	// 使用 New() 而不是 Default()，因为后者自带了同步的 Logger 和 Recovery
+	r := gin.New()
 
-	// 注册 OpenTelemetry 中间件
+	// 1. 注册中间件
+	r.Use(gin.Recovery())
 	r.Use(otelgin.Middleware("gateway-service"))
+	// 新增：异步访问日志中间件
+	r.Use(middleware.AccessLog())
 
-	// 1. 系统路由
+	// 2. 系统路由
 	r.GET("/health", healthHandler.Ping)
 
 	// 2. 业务路由

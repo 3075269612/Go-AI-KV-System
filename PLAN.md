@@ -37,7 +37,7 @@
 
 [x] Day 13: [链路追踪] 集成 OpenTelemetry/Jaeger —— 微服务可观测性，大厂必问 ✅
 
-[ ] Day 14: [中间件] Access Log 异步日志库开发 (Channel 缓冲写)
+[x] Day 14: [中间件] Access Log 异步日志库开发 (Channel 缓冲写) ✅
 
 [ ] Day 15: [高可用] 全局限流 (Token Bucket 算法实现)
 
