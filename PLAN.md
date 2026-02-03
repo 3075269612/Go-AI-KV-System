@@ -39,7 +39,7 @@
 
 [x] Day 14: [中间件] Access Log 异步日志库开发 (Channel 缓冲写) ✅
 
-[ ] Day 15: [高可用] 全局限流 (Token Bucket 算法实现)
+[x] Day 15: [高可用] 全局限流 (Token Bucket 算法实现) ✅
 
 [ ] Day 16: [高可用] 熔断降级 (Hystrix 状态机实现)
 

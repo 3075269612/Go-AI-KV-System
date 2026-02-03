@@ -16,8 +16,10 @@ func NewRouter(kvHandler *handler.KVHandler, healthHandler *handler.HealthHandle
 	// 1. 注册中间件
 	r.Use(gin.Recovery())
 	r.Use(otelgin.Middleware("gateway-service"))
-	// 新增：异步访问日志中间件
+	// Day 14 新增：异步访问日志中间件
 	r.Use(middleware.AccessLog())
+	// Day 15 新增：全局限流中间件
+	r.Use(middleware.GlobalRateLimiter(1000, 2000))
 
 	// 2. 系统路由
 	r.GET("/health", healthHandler.Ping)
