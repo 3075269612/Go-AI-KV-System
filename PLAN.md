@@ -55,7 +55,7 @@
 
 [x] Day 22: [中间件] RabbitMQ 与事件总线 (EventBus) —— 搭建基础设置，在 KV 内部实现基于 Channel 的 EventBus 解耦业务逻辑与消息发送。 ✅
 
-[ ] Day 23: [架构模式] CDC 数据变更流 (Change Data Capture) —— 改造 Set/Del 操作，在落盘后异步分发变更事件，实现 "Fire-and-Forget" 模式，确保主流程低延迟。
+[x] Day 23: [架构模式] CDC 数据变更流 (Change Data Capture) —— 改造 Set/Del 操作，在落盘后异步分发变更事件，实现 "Fire-and-Forget" 模式，确保主流程低延迟。 ✅
 
 [ ] Day 24: [可靠性] 优雅启停 (Graceful Shutdown) —— 完善 KV Server 端的退出逻辑，确保 AOF 缓冲区刷盘、RabbitMQ 连接安全关闭，防止数据丢失。
 
